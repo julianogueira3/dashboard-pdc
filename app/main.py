@@ -4,6 +4,7 @@ from tabs_visao_geral import tab_visao_geral
 from tabs_status import tab_status
 from tabs_tabela import tab_tabela
 from tabs_mapas import tab_mapas
+from tabs_nuvem import tab_nuvem
 
 # Carregar dados (único ponto)
 @st.cache_data
@@ -27,6 +28,18 @@ for key, default in {
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
+
+# CSS
+st.markdown("""
+<style>
+/* Ajusta todos os botões dentro das colunas da sidebar */
+section[data-testid="stSidebar"] div[data-testid="column"] button {
+    width: 100% !important;
+    padding: 0.5rem 0 !important;
+    font-size: 0.85rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # Sidebar
 st.sidebar.header("Filtros Interativos")
@@ -71,9 +84,11 @@ if st.sidebar.button("Limpar todos os filtros", key="btn_limpar_tudo"):
 
 with st.sidebar.expander("Estado", expanded=True):
     estados_disponiveis = sorted(df['UF'].unique())
-    col1, col2 = st.columns(2)
-    col1.button("Selecionar todos", on_click=selecionar_todos_estados, key="btn_sel_todos_estados")
-    col2.button("Limpar", on_click=limpar_estados, key="btn_limpar_estados")
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.button("Selecionar todos", on_click=selecionar_todos_estados, key="btn_sel_todos_estados")
+    with col2:
+        st.button("Limpar", on_click=limpar_estados, key="btn_limpar_estados")
     st.multiselect(
         "Selecione Estado(s):",
         options=estados_disponiveis,
@@ -90,9 +105,11 @@ with st.sidebar.expander("Estado", expanded=True):
 
 with st.sidebar.expander("Cidade", expanded=True):
     cidades_disponiveis = obter_cidades_disponiveis()
-    col1, col2 = st.columns(2)
-    col1.button("Selecionar todas", on_click=selecionar_todas_cidades, key="btn_sel_todas_cidades")
-    col2.button("Limpar", on_click=limpar_cidades, key="btn_limpar_cidades")
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.button("Selecionar todas", on_click=selecionar_todas_cidades, key="btn_sel_todas_cidades")
+    with col2:
+        st.button("Limpar", on_click=limpar_cidades, key="btn_limpar_cidades")
     st.multiselect(
         "Selecione Cidade(s):",
         options=cidades_disponiveis,
@@ -109,9 +126,11 @@ with st.sidebar.expander("Cidade", expanded=True):
 
 with st.sidebar.expander("Status", expanded=True):
     status_disponiveis = sorted(df['STATUS'].unique())
-    col1, col2 = st.columns(2)
-    col1.button("Selecionar todos", on_click=selecionar_todos_status, key="btn_sel_todos_status")
-    col2.button("Limpar", on_click=limpar_status, key="btn_limpar_status")
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.button("Selecionar todos", on_click=selecionar_todos_status, key="btn_sel_todos_status")
+    with col2:
+        st.button("Limpar", on_click=limpar_status, key="btn_limpar_status")
     st.multiselect(
         "Selecione Status:",
         options=status_disponiveis,
@@ -149,10 +168,17 @@ df_filtrado = df_filtrado[
 ]
 
 # Tabs
-tab1, tab2, tab3, tab4 = st.tabs(["Visão Geral", "Status das Reclamações", "Tabela de Reclamações", "Mapas"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "Visão Geral", 
+    "Status das Reclamações", 
+    "Tabela de Reclamações", 
+    "Mapas", 
+    "Nuvem de Palavras"
+])
 
 tab_visao_geral(df_filtrado, top_n_int, tab1)
 tab_status(df_filtrado, tab2)
 tab_tabela(df_filtrado, tab3)
 tab_mapas(df_filtrado, tab4)
+tab_nuvem(df_filtrado, tab5)
 
