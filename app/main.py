@@ -10,16 +10,53 @@ from tabs_nuvem import tab_nuvem
 # Configuração da página e sidebar mais larga
 st.set_page_config(page_title="Dashboard Reclame Aqui", layout="wide")
 
+st.markdown("""
+    <style>
+    html, body, [class*="css"]  {
+        font-size: 204x;
+        background-color: #f9f9f9 !important;
+        color: #111 !important;
+    }
+
+    .stButton > button {
+        background-color: #4CAF50 !important;
+        color: white !important;
+        font-size: 16px !important;
+        padding: 10px 20px;
+        border-radius: 10px;
+        margin: 5px 0;
+    }
+
+    .stSelectbox label,
+    .stSlider label,
+    .stRadio label,
+    .stMultiSelect label,
+    .stExpanderHeader {
+        font-size: 18px !important;
+        font-weight: 600 !important;
+    }
+
+    .stRadio > div {
+        justify-content: space-around !important;
+    }
+
+    .stTabs [role="tab"] {
+        font-size: 18px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 st.markdown(
     """
     <style>
     /* Largura da sidebar */
     [data-testid="stSidebar"] {
-        width: 320px;
-        min-width: 320px;
+        width: 100%;
+        min-width: 400px;
     }
     [data-testid="stSidebar"] > div:first-child {
-        width: 320px;
+        width: 400px;
     }
     </style>
     """,

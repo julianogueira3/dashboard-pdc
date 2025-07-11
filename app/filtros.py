@@ -50,7 +50,7 @@ def sidebar_filtros(df):
 
     st.sidebar.header("Filtros Interativos")
 
-    with st.sidebar.expander("Estado", expanded=False):
+    with st.sidebar.expander("🌎 Estado", expanded=False):
         estados_disponiveis = sorted(df['UF'].unique())
         col1, col2 = st.columns([1,1])
         with col1:
@@ -71,7 +71,7 @@ def sidebar_filtros(df):
             key="min_estado"
         )
 
-    with st.sidebar.expander("Cidade", expanded=False):
+    with st.sidebar.expander("🌎 Cidade", expanded=False):
         cidades_disponiveis = obter_cidades_disponiveis(df)
         col1, col2 = st.columns([1,1])
         with col1:
@@ -92,7 +92,7 @@ def sidebar_filtros(df):
             key="min_cidade"
         )
 
-    with st.sidebar.expander("Status", expanded=False):
+    with st.sidebar.expander("📌 Status", expanded=False):
         status_disponiveis = sorted(df['STATUS'].unique())
         col1, col2 = st.columns([1,1])
         with col1:
@@ -105,6 +105,7 @@ def sidebar_filtros(df):
             default=st.session_state.status,
             key="status"
         )
+    
 
     st.sidebar.markdown("---")
     st.sidebar.button("Limpar todos os filtros", on_click=limpar_tudo, key="btn_limpar_tudo")
@@ -118,6 +119,9 @@ def aplicar_filtros(df):
         df_filtrado = df_filtrado[df_filtrado['Cidade'].isin(st.session_state.cidades)]
     if st.session_state.status:
         df_filtrado = df_filtrado[df_filtrado['STATUS'].isin(st.session_state.status)]
+    if 'faixa_tamanho' in st.session_state:
+        min_t, max_t = st.session_state['faixa_tamanho']
+        df = df[df['DESCRICAO'].str.split().apply(len).between(min_t, max_t)]
 
     estado_counts = df_filtrado['UF'].value_counts()
     cidade_counts = df_filtrado['Cidade'].value_counts()

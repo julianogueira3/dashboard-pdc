@@ -1,11 +1,12 @@
 import streamlit as st
 import geopandas as gpd
+import pandas as pd
 import folium
 import zipfile
 import os
 from streamlit_folium import st_folium
 
-@st.cache_data(show_spinner=False)
+@st.cache_resource(show_spinner=False)
 def carregar_shapefile_ibge():
     url = 'https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2024/Brasil/BR_UF_2024.zip'
     zip_path = 'BR_UF_2024.zip'
@@ -148,6 +149,7 @@ def tab_mapas(df, container):
 
         col1, col2 = st.columns([1, 3])
 
+    
         with col1:
             opcao = st.selectbox(
                 "Selecione o tipo de mapa:",
@@ -156,6 +158,12 @@ def tab_mapas(df, container):
             )
 
         with col2:
+            
+            df['Ano'] = pd.to_datetime(df['TEMPO'], errors='coerce').dt.year.dropna().astype(int)
+            anos_disponiveis = sorted(df['Ano'].dropna().unique())
+            ano_selecionado = st.selectbox("Selecione o ano:", anos_disponiveis, index=len(anos_disponiveis) - 1)
+            df = df[df['Ano'] == ano_selecionado]
+
             gdf_estados = carregar_shapefile_ibge()
             if opcao == "Total por UF":
                 mapa = mapa_por_total(df.copy(), gdf_estados.copy())
