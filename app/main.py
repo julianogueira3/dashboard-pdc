@@ -8,7 +8,6 @@ from tabs_mapas import tab_mapas
 from tabs_nuvem import tab_nuvem
 from tabs_serie_temporal import tab_serie_temp
 
-
 # Configuração da página e sidebar mais larga
 st.set_page_config(page_title="Dashboard Reclame Aqui", layout="wide")
 
@@ -80,22 +79,18 @@ sidebar_filtros(df)
 
 df_filtrado = aplicar_filtros(df)
 
-
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-
-    "Visão Geral", 
-    "Status das Reclamações", 
-    "Tabela de Reclamações", 
-    "Mapas", 
-    "Nuvem de Palavras",
-    "Série Temporal"
-
+    "Análise Geral das Reclamações", 
+    "Tabela de Reclamações",
+    "Análise Status das Reclamações",  
+    "Análise das Reclamações com Mapas", 
+    "Análise Textual das Reclamações",
+    "Análise Série Temporal das Reclamações"
 ])
 
 tab_visao_geral(df_filtrado, tab1)
-tab_status(df_filtrado, tab2)
-tab_tabela(df_filtrado, tab3)
+tab_tabela(df_filtrado, tab2)
+tab_status(df_filtrado, tab3)
 tab_mapas(df_filtrado, tab4)
 tab_nuvem(df_filtrado, tab5)
 tab_serie_temp(df_filtrado, tab6)
-
