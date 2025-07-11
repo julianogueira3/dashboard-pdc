@@ -61,8 +61,10 @@ Para fazer o deploy, recomendamos a plataforma **Streamlit Cloud**:
 
 ## 👥 Integrantes
 
-- Julia Nunes – Matrícula: 123456789
-- [Adicionar os demais integrantes aqui]
+- Julia Nunes – Matrícula: 2427399
+- Ismael Góes – Matrícula: 2428140
+- Jarlan Silva – Matrícula: 2427608 
+- Artur Rodrigues Bastos - Matrícula: 2427753
 
 ## 🎥 Apresentação
 

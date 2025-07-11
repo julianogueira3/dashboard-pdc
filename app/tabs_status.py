@@ -3,7 +3,7 @@ import plotly.express as px
 
 def tab_status(df, container):
     with container:
-        st.header("Status das Reclamações")
+        st.header("📦 Status das Reclamações")
         status_counts = df['STATUS'].value_counts()
         if not status_counts.empty:
             fig_status = px.bar(

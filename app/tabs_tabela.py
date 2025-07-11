@@ -3,7 +3,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 
 def tab_tabela(df, container):
     with container:
-        st.header("Tabela de Reclamações Filtrada")
+        st.header("📋 Tabela de Reclamações Filtrada")
         colunas_exibidas = ["ID", "TEMA", "LOCAL", "TEMPO", "CATEGORIA", "STATUS", "DESCRICAO"]
 
         if not df.empty:
