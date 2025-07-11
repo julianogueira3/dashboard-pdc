@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 
+
 def inicializar_estado_sessao():
     defaults = {
         "estados": [],
@@ -39,12 +40,12 @@ def sidebar_filtros(df):
         st.session_state.data_inicial = df['TEMPO'].min().date()
         st.session_state.data_final = df['TEMPO'].max().date()
 
-
     def limpar_tudo():
         limpar_estados()
         limpar_cidades()
         limpar_status()
         limpar_datas()
+
         st.session_state.min_estado = 1
         st.session_state.min_cidade = 1
         st.session_state.top_n = 5
@@ -138,7 +139,7 @@ def sidebar_filtros(df):
                     max_value=data_max,
                     key="data_final"
                 )
-    
+
 
     st.sidebar.markdown("---")
     st.sidebar.button("Limpar todos os filtros", on_click=limpar_tudo, key="btn_limpar_tudo")
@@ -160,6 +161,7 @@ def aplicar_filtros(df):
             (df_filtrado['TEMPO'].dt.date >= st.session_state.data_inicial) &
             (df_filtrado['TEMPO'].dt.date <= st.session_state.data_final)
         ]
+
 
     estado_counts = df_filtrado['UF'].value_counts()
     cidade_counts = df_filtrado['Cidade'].value_counts()
