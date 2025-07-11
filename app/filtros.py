@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+
 
 def inicializar_estado_sessao():
     defaults = {
@@ -33,10 +35,17 @@ def sidebar_filtros(df):
     def limpar_status():
         st.session_state.status = []
 
+    def limpar_datas():
+        df['TEMPO'] = pd.to_datetime(df['TEMPO'])
+        st.session_state.data_inicial = df['TEMPO'].min().date()
+        st.session_state.data_final = df['TEMPO'].max().date()
+
     def limpar_tudo():
         limpar_estados()
         limpar_cidades()
         limpar_status()
+        limpar_datas()
+
         st.session_state.min_estado = 1
         st.session_state.min_cidade = 1
         st.session_state.top_n = 5
@@ -105,7 +114,32 @@ def sidebar_filtros(df):
             default=st.session_state.status,
             key="status"
         )
-    
+
+        with st.sidebar.expander("📅 Intervalo de Datas", expanded=False):
+            st.button("Limpar", on_click=limpar_datas, key="btn_limpar_datas")
+            df['TEMPO'] = pd.to_datetime(df['TEMPO'])
+
+            data_min = df['TEMPO'].min().date()
+            data_max = df['TEMPO'].max().date()
+
+            col1, col2 = st.columns(2)
+            with col1:
+                data_inicial = st.date_input(
+                    "Data Inicial",
+                    value=data_min,
+                    min_value=data_min,
+                    max_value=data_max,
+                    key="data_inicial"
+                )
+            with col2:
+                data_final = st.date_input(
+                    "Data Final",
+                    value=data_max,
+                    min_value=data_min,
+                    max_value=data_max,
+                    key="data_final"
+                )
+
 
     st.sidebar.markdown("---")
     st.sidebar.button("Limpar todos os filtros", on_click=limpar_tudo, key="btn_limpar_tudo")
@@ -122,6 +156,12 @@ def aplicar_filtros(df):
     if 'faixa_tamanho' in st.session_state:
         min_t, max_t = st.session_state['faixa_tamanho']
         df = df[df['DESCRICAO'].str.split().apply(len).between(min_t, max_t)]
+    if "data_inicial" in st.session_state and "data_final" in st.session_state:
+        df_filtrado = df_filtrado[
+            (df_filtrado['TEMPO'].dt.date >= st.session_state.data_inicial) &
+            (df_filtrado['TEMPO'].dt.date <= st.session_state.data_final)
+        ]
+
 
     estado_counts = df_filtrado['UF'].value_counts()
     cidade_counts = df_filtrado['Cidade'].value_counts()
