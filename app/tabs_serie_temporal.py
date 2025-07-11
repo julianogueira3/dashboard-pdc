@@ -30,3 +30,30 @@ def tab_serie_temp(df, container):
             st.plotly_chart(fig_status, use_container_width=True)
         else:
             st.info("Sem dados de tempo para exibir.")
+
+        st.markdown("---")
+
+    df['TEMPO'] = pd.to_datetime(df['TEMPO'])
+    df['MES_ANO'] = df['TEMPO'].dt.to_period('M').astype(str)
+
+    # Criar coluna de tamanho da reclamação (nº de palavras)
+    df['TAM_RECLAMACAO'] = df['DESCRICAO'].str.split().apply(len)
+
+    # Agrupar média de tamanho por mês
+    media_por_mes = df.groupby('MES_ANO')['TAM_RECLAMACAO'].mean().reset_index()
+
+    with container:
+        st.header("📝 Tamanho Médio das Reclamações por Mês")
+        if not media_por_mes.empty:
+            fig = px.line(
+                media_por_mes,
+                x='MES_ANO',
+                y='TAM_RECLAMACAO',
+                markers=True,
+                labels={"MES_ANO": "Mês/Ano", "TAM_RECLAMACAO": "Tamanho Médio"},
+                title="Evolução do Tamanho das Reclamações(Palavras)"
+            )
+            fig.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("Sem dados suficientes para gerar a série temporal.")
