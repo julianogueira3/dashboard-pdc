@@ -34,7 +34,8 @@ def tab_visao_geral(df, container):
                     y=cidade_counts.values,
                     labels={"x": "Cidade", "y": "Quantidade"},
                     color=cidade_counts.values,
-                    color_continuous_scale="Blues",
+                    color_continuous_scale=[[0, '#cce5ff'], [0.5, '#3399ff'], [1, '#003366']],
+
                     text=cidade_counts.values
                 )
                 fig_cid.update_traces(textposition="outside")
@@ -53,7 +54,7 @@ def tab_visao_geral(df, container):
                     y=estado_counts.values,
                     labels={"x": "Estado", "y": "Quantidade"},
                     color=estado_counts.values,
-                    color_continuous_scale="Blues",
+                    color_continuous_scale=[[0, '#cce5ff'], [0.5, '#3399ff'], [1, '#003366']],
                     text=estado_counts.values
                 )
                 fig_est.update_traces(textposition="outside")

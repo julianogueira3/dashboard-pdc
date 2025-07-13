@@ -11,7 +11,7 @@ def tab_status(df, container):
                 x=status_counts.index,
                 y=status_counts.values,
                 color=status_counts.values,
-                color_continuous_scale="Blues",
+                color_continuous_scale=[[0, '#cce5ff'], [0.5, '#3399ff'], [1, '#003366']],
                 labels={"x": "Status", "y": "Quantidade"},
                 text=status_counts.values
             )

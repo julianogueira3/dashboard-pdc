@@ -20,7 +20,7 @@ def tab_serie_temp(df, container):
                 x=status_counts.index,
                 y=status_counts.values,
                 color=status_counts.values,
-                color_continuous_scale="Blues",
+                color_continuous_scale=[[0, '#cce5ff'], [0.5, '#3399ff'], [1, '#003366']],
                 labels={"x": "Mês/Ano", "y": "Quantidade"},
                 text=status_counts.values
             )
