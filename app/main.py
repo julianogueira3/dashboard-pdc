@@ -11,6 +11,8 @@ from tabs_serie_temporal import tab_serie_temp
 # Configuração da página e sidebar mais larga
 st.set_page_config(page_title="Dashboard Reclame Aqui", layout="wide")
 
+st.title("Análise do Reclame Aqui - Pão de Açucar")
+
 st.markdown("""
     <style>
     html, body, [class*="css"]  {
@@ -27,6 +29,10 @@ st.markdown("""
         border-radius: 10px;
         margin: 5px 0;
     }
+    
+    .st-af input {
+            font-size: 12px;
+            }
 
     .stSelectbox label,
     .stSlider label,
@@ -50,17 +56,15 @@ st.markdown("""
 
 st.markdown(
     """
+    
     <style>
-    /* Largura da sidebar */
-    [data-testid="stSidebar"] {
-        width: 100%;
-        min-width: 400px;
-    }
-    [data-testid="stSidebar"] > div:first-child {
-        width: 400px;
-    }
-    </style>
-    """,
+    [data-testid="stSidebar"] {
+        min-width: 250px;
+        width: 250px;
+    }
+    </style>
+    """,
+
     unsafe_allow_html=True
 )
 
@@ -80,17 +84,18 @@ sidebar_filtros(df)
 df_filtrado = aplicar_filtros(df)
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "Análise Geral das Reclamações", 
+    "Frequência de Reclamações",
+    "Série Temporal",
+    "Frequência por tipo de Status",  
+    "Análise com Mapas", 
+    "Análise Textual",
     "Tabela de Reclamações",
-    "Análise Status das Reclamações",  
-    "Análise das Reclamações com Mapas", 
-    "Análise Textual das Reclamações",
-    "Análise Série Temporal das Reclamações"
+    
 ])
 
 tab_visao_geral(df_filtrado, tab1)
-tab_tabela(df_filtrado, tab2)
+tab_serie_temp(df_filtrado, tab2)
 tab_status(df_filtrado, tab3)
 tab_mapas(df_filtrado, tab4)
 tab_nuvem(df_filtrado, tab5)
-tab_serie_temp(df_filtrado, tab6)
+tab_tabela(df_filtrado, tab6)

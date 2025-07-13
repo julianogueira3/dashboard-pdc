@@ -22,6 +22,10 @@ def carregar_shapefile_ibge():
 
     shapefile_path = os.path.join(extract_folder, 'BR_UF_2024.shp')
     gdf = gpd.read_file(shapefile_path)
+
+    # ✅ Simplificação do shapefile
+    gdf["geometry"] = gdf["geometry"].simplify(tolerance=0.01, preserve_topology=True)
+
     return gdf
 
 def mapa_por_total(df, gdf_estados):
@@ -50,8 +54,11 @@ def mapa_por_total(df, gdf_estados):
         reset=True
     ).add_to(m)
 
+    # ✅ Conversão para GeoJSON
+    geojson = gdf_merged.to_json()
+
     folium.GeoJson(
-        gdf_merged,
+        geojson,
         style_function=lambda feature: {
             'fillColor': 'transparent',
             'color': 'black',
@@ -80,8 +87,10 @@ def mapa_por_status(df, gdf_estados):
 
     m = folium.Map(location=[-15.78, -47.93], zoom_start=4)
 
+    geojson = gdf_merged.to_json()
+
     folium.GeoJson(
-        gdf_merged,
+        geojson,
         style_function=lambda feature: {
             'fillColor': '#3186cc',
             'color': 'black',
@@ -98,7 +107,6 @@ def mapa_por_status(df, gdf_estados):
     return m
 
 def mapa_por_categoria(df, gdf_estados):
-    # Preparar dados para categorias
     df['UF'] = df['LOCAL'].str.split(' - ').str[1].str.strip().str.upper()
     df_explodido = df.assign(
         CATEGORIA_SEPARADA = df['CATEGORIA'].str.split('<->')
@@ -126,8 +134,10 @@ def mapa_por_categoria(df, gdf_estados):
 
     m = folium.Map(location=[-15.78, -47.93], zoom_start=4)
 
+    geojson = gdf_merged.to_json()
+
     folium.GeoJson(
-        gdf_merged,
+        geojson,
         style_function=lambda feature: {
             'fillColor': '#3186cc',
             'color': 'black',
@@ -149,7 +159,6 @@ def tab_mapas(df, container):
 
         col1, col2 = st.columns([1, 3])
 
-    
         with col1:
             opcao = st.selectbox(
                 "Selecione o tipo de mapa:",
@@ -158,21 +167,21 @@ def tab_mapas(df, container):
             )
 
         with col2:
-            
             df['Ano'] = pd.to_datetime(df['TEMPO'], errors='coerce').dt.year.dropna().astype(int)
             anos_disponiveis = sorted(df['Ano'].dropna().unique())
             ano_selecionado = st.selectbox("Selecione o ano:", anos_disponiveis, index=len(anos_disponiveis) - 1)
             df = df[df['Ano'] == ano_selecionado]
 
             gdf_estados = carregar_shapefile_ibge()
+
             if opcao == "Total por UF":
-                mapa = mapa_por_total(df.copy(), gdf_estados.copy())
+                mapa = mapa_por_total(df, gdf_estados)
                 st.subheader("Total de Reclamações por Estado")
             elif opcao == "Por Status":
-                mapa = mapa_por_status(df.copy(), gdf_estados.copy())
+                mapa = mapa_por_status(df, gdf_estados)
                 st.subheader("Reclamações por Status")
             else:
-                mapa = mapa_por_categoria(df.copy(), gdf_estados.copy())
+                mapa = mapa_por_categoria(df, gdf_estados)
                 st.subheader("Reclamações por Categoria")
 
             st_folium(mapa, width=700, height=500)

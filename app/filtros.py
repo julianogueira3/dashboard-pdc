@@ -15,6 +15,7 @@ def inicializar_estado_sessao():
         if key not in st.session_state:
             st.session_state[key] = default
 
+
 def sidebar_filtros(df):
     def selecionar_todos_estados():
         st.session_state.estados = sorted(df['UF'].unique())
@@ -61,11 +62,9 @@ def sidebar_filtros(df):
 
     with st.sidebar.expander("🌎 Estado", expanded=False):
         estados_disponiveis = sorted(df['UF'].unique())
-        col1, col2 = st.columns([1,1])
-        with col1:
-            st.button("Selecionar todos", on_click=selecionar_todos_estados, key="btn_sel_todos_estados")
-        with col2:
-            st.button("Limpar", on_click=limpar_estados, key="btn_limpar_estados")
+
+        st.button("Selecionar todos", on_click=selecionar_todos_estados, key="btn_sel_todos_estados")
+
         st.multiselect(
             "Selecione Estado(s):",
             options=estados_disponiveis,
@@ -79,14 +78,13 @@ def sidebar_filtros(df):
             value=st.session_state.min_estado,
             key="min_estado"
         )
+        st.button("Limpar", on_click=limpar_estados, key="btn_limpar_estados")
 
     with st.sidebar.expander("🌎 Cidade", expanded=False):
         cidades_disponiveis = obter_cidades_disponiveis(df)
-        col1, col2 = st.columns([1,1])
-        with col1:
-            st.button("Selecionar todas", on_click=selecionar_todas_cidades, key="btn_sel_todas_cidades")
-        with col2:
-            st.button("Limpar", on_click=limpar_cidades, key="btn_limpar_cidades")
+        
+        st.button("Selecionar todas", on_click=selecionar_todas_cidades, key="btn_sel_todas_cidades")
+        
         st.multiselect(
             "Selecione Cidade(s):",
             options=cidades_disponiveis,
@@ -100,50 +98,58 @@ def sidebar_filtros(df):
             value=st.session_state.min_cidade,
             key="min_cidade"
         )
+        st.button("Limpar", on_click=limpar_cidades, key="btn_limpar_cidades")
 
     with st.sidebar.expander("📌 Status", expanded=False):
         status_disponiveis = sorted(df['STATUS'].unique())
-        col1, col2 = st.columns([1,1])
-        with col1:
-            st.button("Selecionar todos", on_click=selecionar_todos_status, key="btn_sel_todos_status")
-        with col2:
-            st.button("Limpar", on_click=limpar_status, key="btn_limpar_status")
+        st.button("Selecionar todos", on_click=selecionar_todos_status, key="btn_sel_todos_status")
+
         st.multiselect(
             "Selecione Status:",
             options=status_disponiveis,
             default=st.session_state.status,
             key="status"
         )
+        st.button("Limpar", on_click=limpar_status, key="btn_limpar_status")
 
-        with st.sidebar.expander("📅 Intervalo de Datas", expanded=False):
-            st.button("Limpar", on_click=limpar_datas, key="btn_limpar_datas")
-            df['TEMPO'] = pd.to_datetime(df['TEMPO'])
+    with st.sidebar.expander("📅 Intervalo de Datas", expanded=False):
+        df['TEMPO'] = pd.to_datetime(df['TEMPO'])
 
-            data_min = df['TEMPO'].min().date()
-            data_max = df['TEMPO'].max().date()
+        data_min = df['TEMPO'].min().date()
+        data_max = df['TEMPO'].max().date()
 
-            col1, col2 = st.columns(2)
-            with col1:
-                data_inicial = st.date_input(
-                    "Data Inicial",
-                    value=data_min,
-                    min_value=data_min,
-                    max_value=data_max,
-                    key="data_inicial"
-                )
-            with col2:
-                data_final = st.date_input(
-                    "Data Final",
-                    value=data_max,
-                    min_value=data_min,
-                    max_value=data_max,
-                    key="data_final"
-                )
+        col1, col2 = st.columns(2)
+        with col1:
+            data_inicial = st.date_input(
+                "Data Inicial",
+                value=data_min,
+                min_value=data_min,
+                max_value=data_max,
+                key="data_inicial"
+            )
+        with col2:
+            data_final = st.date_input(
+                "Data Final",
+                value=data_max,
+                min_value=data_min,
+                max_value=data_max,
+                key="data_final"
+            )
+        st.button("Limpar", on_click=limpar_datas, key="btn_limpar_datas")
 
+    # NOVO FILTRO: Faixa de tamanho da reclamação
+    with st.sidebar.expander("📝 Tamanho da Reclamação", expanded=False):
+        st.slider(
+            "Número de palavras na descrição:",
+            min_value=0,
+            max_value=500,
+            value=(0, 100),
+            key="faixa_tamanho"
+        )
 
     st.sidebar.markdown("---")
     st.sidebar.button("Limpar todos os filtros", on_click=limpar_tudo, key="btn_limpar_tudo")
-    
+
 
 def aplicar_filtros(df):
     df_filtrado = df.copy()
@@ -155,13 +161,14 @@ def aplicar_filtros(df):
         df_filtrado = df_filtrado[df_filtrado['STATUS'].isin(st.session_state.status)]
     if 'faixa_tamanho' in st.session_state:
         min_t, max_t = st.session_state['faixa_tamanho']
-        df = df[df['DESCRICAO'].str.split().apply(len).between(min_t, max_t)]
+        df_filtrado = df_filtrado[
+            df_filtrado['DESCRICAO'].str.split().apply(len).between(min_t, max_t)
+        ]
     if "data_inicial" in st.session_state and "data_final" in st.session_state:
         df_filtrado = df_filtrado[
             (df_filtrado['TEMPO'].dt.date >= st.session_state.data_inicial) &
             (df_filtrado['TEMPO'].dt.date <= st.session_state.data_final)
         ]
-
 
     estado_counts = df_filtrado['UF'].value_counts()
     cidade_counts = df_filtrado['Cidade'].value_counts()
