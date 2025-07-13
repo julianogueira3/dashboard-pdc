@@ -22,6 +22,7 @@ def sidebar_filtros(df):
 
     def limpar_estados():
         st.session_state.estados = []
+        st.session_state.min_estado = 1
 
     def selecionar_todas_cidades():
         cidades_disponiveis = obter_cidades_disponiveis(df)
@@ -29,6 +30,7 @@ def sidebar_filtros(df):
 
     def limpar_cidades():
         st.session_state.cidades = []
+        st.session_state.min_cidade = 1
 
     def selecionar_todos_status():
         st.session_state.status = sorted(df['STATUS'].unique())
@@ -40,15 +42,17 @@ def sidebar_filtros(df):
         df['TEMPO'] = pd.to_datetime(df['TEMPO'])
         st.session_state.data_inicial = df['TEMPO'].min().date()
         st.session_state.data_final = df['TEMPO'].max().date()
+    
+    
+    def limpar_tamanho_texto():
+        st.session_state.faixa_tamanho = (0, 500)
 
     def limpar_tudo():
         limpar_estados()
         limpar_cidades()
         limpar_status()
         limpar_datas()
-
-        st.session_state.min_estado = 1
-        st.session_state.min_cidade = 1
+        limpar_tamanho_texto()
         st.session_state.top_n = 5
 
     def obter_cidades_disponiveis(df):
@@ -146,6 +150,7 @@ def sidebar_filtros(df):
             value=(0, 500),
             key="faixa_tamanho"
         )
+        st.button("Limpar", on_click=limpar_tamanho_texto, key="btn_limpar_tamanho")
 
     st.sidebar.markdown("---")
     st.sidebar.button("Limpar todos os filtros", on_click=limpar_tudo, key="btn_limpar_tudo")
