@@ -30,8 +30,8 @@ reclame_aqui_dashboard/
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/reclame-aqui-dashboard.git
-cd reclame-aqui-dashboard
+git clone https://github.com/julianogueira3/dashboard-pdc.git
+cd dashboard-pdc
 ```
 
 2. Crie o ambiente virtual:
@@ -68,8 +68,8 @@ Para fazer o deploy, recomendamos a plataforma **Streamlit Cloud**:
 
 ## 🎥 Apresentação
 
-📽️ Link do vídeo explicativo: [inserir aqui]
+📽️ Link do vídeo explicativo: https://drive.google.com/file/d/1zLkgwsgsQMs1K6RE343ks_X9fueLqRoq/view?usp=sharing
 
 ## 🌐 Aplicação hospedada
 
-🔗 Link da aplicação: [inserir aqui]
+🔗 Link da aplicação: https://dashboard-pdc-bnpqdkbaa8hjhrt2rxtvms.streamlit.app
