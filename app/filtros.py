@@ -143,7 +143,7 @@ def sidebar_filtros(df):
             "Número de palavras na descrição:",
             min_value=0,
             max_value=500,
-            value=(0, 100),
+            value=(0, 500),
             key="faixa_tamanho"
         )
 
